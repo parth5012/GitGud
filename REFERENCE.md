@@ -49,3 +49,4 @@ learn **NetworkX** (a Python library for studying graphs).
 2. **Zero Maintenance:** You don't have to worry about cleaning up `/tmp` directories full of cloned repos.
 3. **Speed:** The agent can "scan" 100 repositories in seconds rather than minutes.
 
+![Architecture Diagram.](image.png)
