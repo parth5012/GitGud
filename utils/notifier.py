@@ -1,5 +1,9 @@
 import os
+from dotenv import load_dotenv
 from discord_webhook import DiscordWebhook
+
+
+load_dotenv()
 
 URL=os.getenv('DISCORD_WEBHOOK')
 
