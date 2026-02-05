@@ -2,7 +2,6 @@ from pydantic import BaseModel,Field
 from typing import List
 
 
-
 # 1. Define the Schema for a single issue
 class IssueScore(BaseModel):
     issue_id: str = Field(description="The URL or ID of the GitHub issue")

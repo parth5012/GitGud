@@ -1,5 +1,5 @@
 from langchain.tools import tool
-from utils.helpers import get_github_client, proccess_issues
+from utils.helpers import get_github_client, get_llm, proccess_issues
 
 @tool
 def fetch_issues(query:str):
@@ -9,3 +9,29 @@ def fetch_issues(query:str):
     issues = proccess_issues(issues=issues)
     return issues
 
+@tool
+def generate_github_query(user_goal, user_stack):
+    """
+    Uses the LLM to convert user intent into a precise GitHub search query.
+    """
+    
+    prompt = f"""
+    You are an expert GitHub Scout. Your job is to create the PERFECT GitHub search query string.
+    
+    User Goal: {user_goal}
+    User Tech Stack: {user_stack}
+    
+    Rules for the query:
+    1. Always filter for 'state:open'.
+    2. Always filter for 'no:assignee' (we want available issues).
+    3. Use 'language:X' based on the stack.
+    4. If they want beginner issues, use label:"good first issue" OR label:"help wanted".
+    5. Return ONLY the raw query string. No markdown, no explanations.
+    """
+    llm =  get_llm()
+    response = llm.invoke(prompt)
+    return response
+
+
+
+tools = [fetch_issues,generate_github_query]
