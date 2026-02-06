@@ -1,8 +1,12 @@
 from langchain.tools import tool
+from typing import List,Dict
+from utils.parsers import parser1
 from utils.helpers import get_github_client, get_llm, proccess_issues
+from utils.prompts import likelihood_score_prompt
+
 
 @tool
-def fetch_issues(query:str):
+def fetch_issues(query:str) -> Dict:
     client = get_github_client()
     issues = client.search_issues(query=query,sort='created',order='desc')
     print(f"Found {issues.totalCount} matching issues!")
@@ -10,7 +14,7 @@ def fetch_issues(query:str):
     return issues
 
 @tool
-def generate_github_query(user_goal, user_stack):
+def generate_github_query(user_goal:str, user_stack: str) -> str:
     """
     Uses the LLM to convert user intent into a precise GitHub search query.
     """
@@ -32,6 +36,13 @@ def generate_github_query(user_goal, user_stack):
     response = llm.invoke(prompt)
     return response
 
+@tool
+def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
+    """Used to retrieve the likelihood score of the issue being solved by the user based on his skillset."""
+    llm = get_llm()
+    chain = likelihood_score_prompt | llm | parser1
+    response = chain.invoke({"skill_set": skill_set, "metadata": metadata})
+    return int(response)
 
 
-tools = [fetch_issues,generate_github_query]
+tools = [fetch_issues,generate_github_query,get_likelihood_score]

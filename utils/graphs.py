@@ -1,5 +1,6 @@
-from langgraph.graph import StateGraph, START, END
-from utils.nodes import chat_node, get_likelihood_score, tool_node
+from langgraph.graph import StateGraph, START
+from langgraph.prebuilt import tools_condition
+from utils.nodes import chat_node, tool_node
 from .states import CoreState, FilterAgentState
 
 
@@ -20,5 +21,11 @@ def get_semantic_matcher():
 def build_core_graph():
     graph = StateGraph(state_schema=CoreState)
     graph.add_node("chat_node", chat_node)
-    graph.add_node("get_likelihood_score", get_likelihood_score)
     graph.add_node("tool_node", tool_node)
+
+    graph.add_edge(START, "chat_node")
+    graph.add_conditional_edges("chat_node", tools_condition)
+    graph.add_edge("tools", "chat_node")
+
+    workflow = graph.compile()
+    return workflow
