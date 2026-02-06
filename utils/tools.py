@@ -7,6 +7,7 @@ from utils.prompts import likelihood_score_prompt
 
 @tool
 def fetch_issues(query:str) -> Dict:
+    '''Fetch issues from github using the query given in input.'''
     client = get_github_client()
     issues = client.search_issues(query=query,sort='created',order='desc')
     print(f"Found {issues.totalCount} matching issues!")
