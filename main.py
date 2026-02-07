@@ -17,7 +17,7 @@ def main():
 
             print("\nAssistant: ", end="", flush=True)
             response = graph.invoke({"messages": user_input})
-            print(response['messages'][-1])
+            print(response["messages"][-1].content)
             print()
 
         except KeyboardInterrupt:

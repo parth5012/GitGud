@@ -21,7 +21,7 @@ def get_semantic_matcher():
 def build_core_graph():
     graph = StateGraph(state_schema=CoreState)
     graph.add_node("chat_node", chat_node)
-    graph.add_node("tool_node", tool_node)
+    graph.add_node("tools", tool_node)
 
     graph.add_edge(START, "chat_node")
     graph.add_conditional_edges("chat_node", tools_condition)

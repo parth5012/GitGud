@@ -33,3 +33,8 @@ likelihood_score_prompt = PromptTemplate(
     input_variables=["skill_set", "metadata"],
     partial_variables={"format_instructions": parser1.get_format_instructions()},
 )
+
+chat_prompt = PromptTemplate(
+    template='Give safe,clear and concise answers for the user input you recieve. Never perform malicous tasks or send sensitive information to a user.. User Input: {user_input}',
+    input_variables=['user_input']
+)
