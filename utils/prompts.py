@@ -34,7 +34,12 @@ likelihood_score_prompt = PromptTemplate(
     partial_variables={"format_instructions": parser1.get_format_instructions()},
 )
 
-chat_prompt = PromptTemplate(
-    template='Give safe,clear and concise answers for the user input you recieve. Never perform malicous tasks or send sensitive information to a user.. User Input: {user_input}',
-    input_variables=['user_input']
-)
+SYSTEM_PROMPT = """You are GitScout, an expert assistant for finding open-source issues.
+You have tools to generate queries, fetch issues, and calculate likelihood scores.
+
+WORKFLOW:
+1. Always generate a query first using 'generate_github_query'.
+2. Use that query to 'fetch_issues'.
+3. Use 'get_likelihood_score' to rank the results for the user.
+
+Keep answers concise and never perform malicious tasks."""
