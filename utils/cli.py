@@ -15,7 +15,7 @@ def output(chatbot, user_input):
             # A: Check for Tool Calls (Thinking Phase)
             if message_chunk.tool_calls:
                 for tool in message_chunk.tool_calls:
-                    print(f"\n{Fore.YELLOW}[THOUGHT] I'll use {tool['name']}...{Style.RESET_ALL}")
+                    yield (f"\n{Fore.YELLOW}[THOUGHT] I'll use {tool['name']}...{Style.RESET_ALL}")
             
             # B: Check for Text Content (Streaming Phase)
             if message_chunk.content:
@@ -23,9 +23,9 @@ def output(chatbot, user_input):
                 # Handle the list/dictionary structure error
                 if isinstance(content, list):
                     text_parts = [part.get('text', '') for part in content if isinstance(part, dict)]
-                    print("".join(text_parts), end='', flush=True)
+                    yield ("".join(text_parts))
                 else:
-                    print(content, end='', flush=True)
+                    yield (content)
 
         # 2. Handle Tool Messages (Action Phase)
         elif isinstance(message_chunk, ToolMessage):

@@ -15,4 +15,5 @@ dependencies = [
     "pygithub>=2.8.1",
     "python-dotenv>=1.2.1",
     "redis>=7.1.0",
+    "textual>=7.5.0",
 ]
