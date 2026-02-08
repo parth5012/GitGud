@@ -25,13 +25,11 @@ def get_github_client() -> Github:
     return client
 
 def proccess_issues(issues):
-    
     issue_data = []
-    for issue in issues[:10]:  # Limit to top 10 for analysis
+    for issue in issues[:10]:
         repo = issue.repository
         
-        # Metadata for your LangGraph "Filter Agent"
-        issue_data += {
+        issue_dict = { 
             "title": issue.title,
             "url": issue.html_url,
             "repo_name": repo.full_name,
@@ -41,6 +39,8 @@ def proccess_issues(issues):
             "comments_count": issue.comments
         }
         
-    print(f"[{issue_data['repo_name']}] {issue_data['title']}")
-
+        issue_data.append(issue_dict)
+        print(f"[{issue_dict['repo_name']}] {issue_dict['title']}") 
+        
     return issue_data
+

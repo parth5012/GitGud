@@ -19,11 +19,14 @@ def fetch_issues(query: str) -> Dict:
     Returns:
         A dictionary containing a list of processed issue objects and total count.
     """
-    client = get_github_client()
-    issues = client.search_issues(query=query, sort="created", order="desc")
-    print(f"Found {issues.totalCount} matching issues!")
-    issues = proccess_issues(issues=issues)
-    return issues
+    try:
+        client = get_github_client()
+        issues = client.search_issues(query=query, sort="created", order="desc")
+        print(f"Found {issues.totalCount} matching issues!")
+        issues = proccess_issues(issues=issues)
+        return issues
+    except Exception as e:
+        return {"error": str(e), "issues": []}
 
 
 @tool
@@ -55,7 +58,7 @@ def generate_github_query(user_goal: str, user_stack: str) -> str:
     """
     llm = get_llm()
     response = llm.invoke(prompt)
-    return response
+    return response.content
 
 
 @tool
@@ -77,7 +80,9 @@ def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
     llm = get_llm()
     chain = likelihood_score_prompt | llm | parser1
     response = chain.invoke({"skill_set": skill_set, "metadata": metadata})
-    return int(response)
+    if response.scores:
+        return int(sum(score.score for score in response.scores) / len(response.scores))
+    return 0
 
 
 tools = [fetch_issues, generate_github_query, get_likelihood_score]
