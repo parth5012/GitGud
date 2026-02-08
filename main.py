@@ -1,6 +1,5 @@
-from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
-from utils.graphs import build_core_graph
-
+from utils.graphs import build_core_graph   
+from utils.cli import output
 
 
 def main():
@@ -17,8 +16,7 @@ def main():
                 continue
 
             print("\nAssistant: ", end="", flush=True)
-            response = graph.invoke({"messages": user_input})
-            print(response["messages"][-1].content)
+            output(graph,user_input)
             print()
 
         except KeyboardInterrupt:

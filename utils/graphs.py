@@ -1,4 +1,4 @@
-from langgraph.graph import StateGraph, START
+from langgraph.graph import StateGraph
 from langgraph.prebuilt import tools_condition
 from utils.nodes import chat_node, tool_node
 from .states import CoreState, FilterAgentState
@@ -23,7 +23,7 @@ def build_core_graph():
     graph.add_node("chat_node", chat_node)
     graph.add_node("tools", tool_node)
 
-    graph.add_edge(START, "chat_node")
+    graph.set_entry_point("chat_node")
     graph.add_conditional_edges("chat_node", tools_condition)
     graph.add_edge("tools", "chat_node")
 
