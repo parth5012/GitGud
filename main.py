@@ -1,5 +1,5 @@
-from utils.graphs import build_core_graph   
-from utils.cli import output
+from utils.graphs import build_core_graph
+from utils.cli import output_stream
 
 
 def main():
@@ -16,7 +16,7 @@ def main():
                 continue
 
             print("\nAssistant: ", end="", flush=True)
-            output(graph,user_input)
+            output_stream(graph, user_input)
             print()
 
         except KeyboardInterrupt:
@@ -25,7 +25,7 @@ def main():
         except Exception as e:
             print(f"\nError: {str(e)}")
             print()
-    
+
 
 if __name__ == "__main__":
     main()
