@@ -1,9 +1,10 @@
+from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 from utils.graphs import build_core_graph
+
 
 
 def main():
     graph = build_core_graph()
-    graph
     while True:
         try:
             user_input = input("You: ").strip()
@@ -26,7 +27,7 @@ def main():
         except Exception as e:
             print(f"\nError: {str(e)}")
             print()
-
+    
 
 if __name__ == "__main__":
     main()
