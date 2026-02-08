@@ -10,6 +10,7 @@ dependencies = [
     "discord-webhook>=1.4.1",
     "langchain>=1.2.6",
     "langchain-google-genai>=4.2.0",
+    "langchain-groq>=1.1.2",
     "langgraph>=1.0.6",
     "pygithub>=2.8.1",
     "python-dotenv>=1.2.1",

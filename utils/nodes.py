@@ -10,7 +10,7 @@ def chat_node(state: CoreState):
     llm = get_llm()
     messages = state["messages"]
     prompted_messages = [SystemMessage(content=SYSTEM_PROMPT)] + messages
-    llm = llm.bind_tools(tools,parallel_tool_calls=True)
+    llm = llm.bind_tools(tools)
     response = llm.invoke(prompted_messages)
     return {"messages": [response]}
 
