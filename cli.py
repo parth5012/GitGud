@@ -1,6 +1,6 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Input, Markdown, Footer, Header, Static
-from textual.containers import Container, VerticalScroll
+from textual.containers import VerticalScroll
 from utils.graphs import build_core_graph
 from utils.cli import async_output_stream
 
