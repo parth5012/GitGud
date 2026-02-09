@@ -11,3 +11,5 @@ wheels/
 .env
 # Agent MD
 agent/
+
+codebases/

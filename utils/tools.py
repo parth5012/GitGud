@@ -1,7 +1,10 @@
 from langchain.tools import tool
+import io
+import requests
+from zipfile import ZipFile
 from typing import List, Dict
 from utils.parsers import parser1
-from utils.helpers import get_github_client, get_llm, proccess_issues
+from utils.helpers import get_github_client, get_llm, get_repo_from_url, proccess_issues
 from utils.prompts import likelihood_score_prompt
 
 
@@ -87,7 +90,27 @@ def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
 
 
 @tool
-def fetch_codebase(url):
-    pass
+def fetch_codebase(url: str):
+    '''
+    Fetch the codebase of any public github repository, helps in in-depth analysis of codebase when needed.
+    :param url: the url of github repository.
+    :type url: str
+    '''
+    try:
+        repo =  get_repo_from_url(url)
+        # Get the url for Zip file.
+        archive_url = repo.get_archive_link("zipball")
+        # Get the Zip in Memory Buffer
+        response = requests.get(archive_url)
+
+        # Extract
+        with ZipFile(io.BytesIO(response.content)) as z:
+            z.extractall("./codebases")
+
+        print("Codebase extracted successfully!")
+        return 'Success'
+    except Exception as e:
+        return f'Failure,Reason: {e}'
+
 
 tools = [fetch_issues, generate_github_query, get_likelihood_score,fetch_codebase]
