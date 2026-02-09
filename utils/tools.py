@@ -24,6 +24,7 @@ def fetch_issues(query: str) -> Dict:
         issues = client.search_issues(query=query, sort="created", order="desc")
         print(f"Found {issues.totalCount} matching issues!")
         issues = proccess_issues(issues=issues)
+        client.close()
         return issues
     except Exception as e:
         return {"error": str(e), "issues": []}
@@ -85,4 +86,8 @@ def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
     return 0
 
 
-tools = [fetch_issues, generate_github_query, get_likelihood_score]
+@tool
+def fetch_codebase(url):
+    pass
+
+tools = [fetch_issues, generate_github_query, get_likelihood_score,fetch_codebase]
