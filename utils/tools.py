@@ -1,5 +1,8 @@
 from langchain.tools import tool
+from langchain_community.document_loaders.generic import GenericLoader
+from langchain_community.document_loaders.parsers import LanguageParser
 import io
+import os
 import requests
 from zipfile import ZipFile
 from typing import List, Dict
@@ -91,13 +94,13 @@ def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
 
 @tool
 def fetch_codebase(url: str):
-    '''
+    """
     Fetch the codebase of any public github repository, helps in in-depth analysis of codebase when needed.
     :param url: the url of github repository.
     :type url: str
-    '''
+    """
     try:
-        repo =  get_repo_from_url(url)
+        repo = get_repo_from_url(url)
         # Get the url for Zip file.
         archive_url = repo.get_archive_link("zipball")
         # Get the Zip in Memory Buffer
@@ -108,9 +111,54 @@ def fetch_codebase(url: str):
             z.extractall("./codebases")
 
         print("Codebase extracted successfully!")
-        return 'Success'
+        return "Success,CodeBase is now Accessible at ./codebases"
     except Exception as e:
-        return f'Failure,Reason: {e}'
+        return f"Failure,Reason: {e}"
 
 
-tools = [fetch_issues, generate_github_query, get_likelihood_score,fetch_codebase]
+@tool
+def map_universal_architecture(repo_path: str) -> dict:
+    """
+    Scans a local repository and returns the file structure for multiple languages
+    (Python, JS, TS, Go, Rust, etc.). It extracts Class and Function names.
+    Use this to understand the current capabilities of the codebase.
+    """
+    architecture = {}
+
+    # We define the extensions we want GitScout to care about
+    supported_extensions = [".py", ".js", ".ts", ".go", ".rs", ".java", ".cpp"]
+
+    # LangChain's GenericLoader walks the directory for us
+    loader = GenericLoader.from_filesystem(
+        repo_path,
+        glob="**/*",
+        suffixes=supported_extensions,
+        # LanguageParser automatically uses Tree-sitter to parse the code syntax
+        parser=LanguageParser(),
+    )
+
+    # This returns a list of "Documents". LangChain automatically splits the files
+    # so that each Document represents a single Function or Class!
+    docs = loader.load()
+
+    for doc in docs:
+        # Get the relative file path
+        source_file = os.path.relpath(doc.metadata["source"], repo_path)
+
+        # LangChain tags the metadata with 'content_type' (e.g., 'functions_classes')
+        # We can use this to build our skeleton
+        if source_file not in architecture:
+            architecture[source_file] = {"components": []}
+
+        # We don't want the actual code, just the signature/definition
+        # We can grab the first line of the chunk (which is usually the 'def' or 'class' declaration)
+        first_line = doc.page_content.split("\n")[0].strip()
+
+        # Avoid adding the "leftover" code chunks that aren't functions/classes
+        if doc.metadata.get("content_type") == "functions_classes":
+            architecture[source_file]["components"].append(first_line)
+
+    return architecture
+
+
+tools = [fetch_issues, generate_github_query, get_likelihood_score, fetch_codebase]
