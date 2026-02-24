@@ -1,10 +1,31 @@
+# Virtual environments
 .venv/
+
+# Python cache
 __pycache__/
 *.pyc
 *.pyo
+*.pyd
+
+# Secrets – injected via env_file at runtime
 .env
+
+# Git history
 .git/
-codebases/
-agent/
+.gitignore
+
+# Dev / build artefacts
 uv.lock
-*.egg-info/ 
+*.egg-info/
+dist/
+build/
+
+# Large runtime directories (mounted as volumes instead)
+codebases/
+
+# Agent instructions – not needed inside the container
+agent/
+
+# CI / IDE
+.github/
+.vscode/

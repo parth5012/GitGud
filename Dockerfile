@@ -1,14 +1,23 @@
-FROM python:3.12-alpine
+FROM python:3.12-slim
 
-WORKDIR /usr/src/app
-
+# Prevent .pyc files and ensure logs appear immediately
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 
-COPY ./requirements.txt .
+WORKDIR /usr/src/app
 
-RUN pip install -r requirements.txt
+# Install build tools needed by tree-sitter-languages (native C extensions)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
 
+# Install Python dependencies (separate layer for better cache reuse)
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the application source
 COPY . .
 
-RUN python main.py
+# Default: run the plain CLI entrypoint
+CMD ["python", "main.py"]
