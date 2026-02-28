@@ -7,7 +7,7 @@ import requests
 from zipfile import ZipFile
 from typing import List, Dict
 from utils.parsers import parser1
-from utils.helpers import get_github_client, get_llm, get_repo_from_url, proccess_issues
+from utils.helpers import get_github_client, get_llm, get_repo_from_url, process_issues
 from utils.prompts import likelihood_score_prompt
 
 
@@ -29,7 +29,7 @@ def fetch_issues(query: str) -> Dict:
         client = get_github_client()
         issues = client.search_issues(query=query, sort="created", order="desc")
         print(f"Found {issues.totalCount} matching issues!")
-        issues = proccess_issues(issues=issues)
+        issues = process_issues(issues=issues)
         client.close()
         return issues
     except Exception as e:

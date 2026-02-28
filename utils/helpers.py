@@ -36,7 +36,7 @@ def get_github_client() -> Github:
     return client
 
 
-def proccess_issues(issues):
+def process_issues(issues):
     issue_data = []
     for issue in issues[:10]:
         repo = issue.repository
@@ -60,18 +60,19 @@ def proccess_issues(issues):
 def get_repo_identifier(url: str) -> str:
     keywords: List = url.split("/")
     username = keywords[-2]
-    repo_name = keywords[-1][:-4]
+    repo_name = keywords[-1]
+    if repo_name.endswith(".git"):
+        repo_name = repo_name[:-4]
     print(username, repo_name)
     return f"{username}/{repo_name}"
 
 
 def get_repo_from_url(url: str) -> Repository:
     # Get github client
-    g = get_github_client()
-    # fetch the unique repo identifier from url
-    repo_identifier = get_repo_identifier(url)
-    # get the repository
-    repo = g.get_repo(repo_identifier)
+    with get_github_client() as g:
+        # fetch the unique repo identifier from url
+        repo_identifier = get_repo_identifier(url)
+        # get the repository
+        repo = g.get_repo(repo_identifier)
 
     return repo
-
