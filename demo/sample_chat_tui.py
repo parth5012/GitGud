@@ -1,8 +1,9 @@
 from textual.app import App, ComposeResult
 from textual.widgets import Input, Markdown, Footer, Header
-from textual.containers import Container , VerticalScroll
+from textual.containers import Container, VerticalScroll
 
-class GitGud(App):
+
+class GitScout(App):
     CSS = """
     #chat_history { height: 1fr; border: solid green; padding: 1; }
     Input { dock: bottom; margin-top: 1; }
@@ -19,16 +20,17 @@ class GitGud(App):
         # 1. Get user message
         user_message = event.value
         history = self.query_one("#chat_history")
-        
+
         # 2. Clear input
         self.query_one(Input).value = ""
-        
+
         # 3. Add user message to history
         await history.mount(Markdown(f"**You:** {user_message}"))
-        
+
         # 4. (Example) Add bot response
         await history.mount(Markdown(f"**Agent:** I heard you say '{user_message}'"))
         history.scroll_end()
 
+
 if __name__ == "__main__":
-    GitGud().run()
+    GitScout().run()

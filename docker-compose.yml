@@ -7,7 +7,7 @@ services:
   # ──────────────────────────────────────────
   redis:
     image: redis:7-alpine
-    container_name: gitgud_redis
+    container_name: GitScout_redis
     restart: unless-stopped
     ports:
       - "6379:6379"
@@ -24,7 +24,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: gitgud_app
+    container_name: GitScout_app
     restart: unless-stopped
     stdin_open: true   # keeps STDIN open so the CLI can accept input
     tty: true          # allocates a pseudo-TTY for Textual / colorama
@@ -46,7 +46,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: gitgud_worker
+    container_name: GitScout_worker
     restart: unless-stopped
     command: celery -A beat worker --loglevel=info
     env_file:
@@ -66,7 +66,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: gitgud_beat
+    container_name: GitScout_beat
     restart: unless-stopped
     command: celery -A beat beat --loglevel=info
     env_file:

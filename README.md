@@ -1,10 +1,10 @@
-# GitGud
+# GitScout
 
 > AI-powered GitHub issue discovery agent that matches your skills with the perfect open-source contribution opportunities.
 
 ## Overview
 
-**GitGud** is an intelligent agent that helps developers find meaningful open-source contributions by analyzing GitHub issues and matching them with their technical skills. Instead of manually searching through thousands of repositories, GitGud uses AI to discover, filter, and score issues based on your expertise, making it easier to find projects where you can make an impact.
+**GitScout** is an intelligent agent that helps developers find meaningful open-source contributions by analyzing GitHub issues and matching them with their technical skills. Instead of manually searching through thousands of repositories, GitScout uses AI to discover, filter, and score issues based on your expertise, making it easier to find projects where you can make an impact.
 
 ## Features
 
@@ -27,8 +27,8 @@
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/GitGud.git
-   cd GitGud
+   git clone https://github.com/yourusername/GitScout.git
+   cd GitScout
    ```
 
 2. **Install dependencies using uv** (recommended)

@@ -5,7 +5,7 @@ from utils.graphs import build_core_graph
 from utils.cli import async_output_stream
 
 
-class GitGud(App):
+class GitScout(App):
     CSS = """
     #chat_history { height: 1fr; border: solid green; padding: 1; }
     Input { dock: bottom; margin-top: 1; }
@@ -50,4 +50,4 @@ class GitGud(App):
 
 
 if __name__ == "__main__":
-    GitGud().run()
+    GitScout().run()
