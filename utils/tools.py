@@ -161,5 +161,20 @@ def map_universal_architecture(repo_path: str) -> dict:
 
     return architecture
 
+@tool
+def read_file_content(repo_path: str, file_path: str) -> str:
+    """
+    Reads the full content of a specific file from a locally extracted repo.
+    Use after map_universal_architecture to drill into a specific file.
+    
+    Args:
+        repo_path: Path to the extracted repo root (e.g. './codebases/myrepo')
+        file_path: Relative path to the file (e.g. 'src/auth/login.py')
+    """
+    full_path = os.path.join(repo_path, file_path)
+    with open(full_path, "r", encoding="utf-8", errors="ignore") as f:
+        return f.read()
 
-tools = [fetch_issues, generate_github_query, get_likelihood_score, fetch_codebase]
+
+
+tools = [fetch_issues, generate_github_query, get_likelihood_score, fetch_codebase,map_universal_architecture,read_file_content]
