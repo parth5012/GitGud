@@ -13,5 +13,7 @@ class CoreState(TypedDict):
     metadata: List[Dict]
     messages: Annotated[list[BaseMessage], add_messages]
     final_response: str
-
+    query: str
+    user_goal: str
+    user_stack: str
 
