@@ -1,4 +1,5 @@
 from celery import shared_task
+import json 
 from utils.notifier import send_content_to_discord
 from utils.graphs import build_beat_graph
 from utils.states import CoreState
@@ -11,6 +12,7 @@ def send_issues_to_discord():
         'user_goal': 'To start with Open Source and long term contributions.',
         'user_stack': 'Python,django,Celery,Langchain,Langgraph,Sklearn'
     })
-    send_content_to_discord(output['scored_issues'])
+    formatted = json.dumps([s.__dict__ for s in output['scored_issues']], indent=2, default=str)
+    send_content_to_discord(formatted)
 
     

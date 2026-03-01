@@ -39,14 +39,14 @@ def get_likelihood_score(state: CoreState) -> List[IssueScore]:
     Returns:
         An integer from 0 to 10, where 10 indicates a perfect match.
     """
-    skill_set = state["skillset"]
+    skill_set = state["user_stack"]
     metadata = state['metadata']
     llm = get_llm()
     chain = likelihood_score_prompt | llm | parser1
     response = chain.invoke({"skill_set": skill_set, "metadata": metadata})
     if response.scores:
-        state['scored_issues'] = response.scores
-        return state
+        return {"scored_issues": list(response.scores)}
+
     return state
 
 def fetch_issues(state: CoreState) -> Dict:
@@ -69,8 +69,7 @@ def fetch_issues(state: CoreState) -> Dict:
         print(f"Found {issues.totalCount} matching issues!")
         issues = process_issues(issues=issues)
         client.close()
-        state['issues'] = issues
-        return state
+        return {"issues": issues}
     except Exception as e:
         return {"error": str(e), "issues": []}
     
@@ -105,5 +104,4 @@ def generate_github_query(state:CoreState) -> str:
     """
     llm = get_llm()
     response = llm.invoke(prompt)
-    state['query'] = response.content
-    return state
+    return {"query": response.content}

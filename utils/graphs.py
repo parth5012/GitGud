@@ -39,6 +39,7 @@ def build_beat_graph():
     graph.set_entry_point('generate_query')
     graph.add_edge('generate_query','fetch_issues')
     graph.add_edge('fetch_issues','get_likelihood_score')
+    graph.add_edge('get_likelihood_score',END)
 
     return graph.compile()
     
