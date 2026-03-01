@@ -1,3 +1,4 @@
+import json
 from colorama import Fore, Style
 from langchain_core.messages import HumanMessage, AIMessage, ToolMessage
 
@@ -39,6 +40,17 @@ def output_stream(chatbot, user_input):
             tool_name = getattr(message_chunk, "name", "tool")
             print(f"\n{Fore.CYAN}[ACTION] Executing {tool_name}!!{Style.RESET_ALL}",end="",flush=True)
 
+
+def _format_tool_content(content) -> str:
+    """Convert tool output (str, dict, list) to a readable string."""
+    if isinstance(content, str):
+        return content
+    try:
+        return json.dumps(content, indent=2, default=str)
+    except Exception:
+        return str(content)
+
+
 # Change to async def
 async def async_output_stream(chatbot, user_input):
     inputs = {"messages": [HumanMessage(content=user_input)]}
@@ -72,4 +84,10 @@ async def async_output_stream(chatbot, user_input):
         # 2. Handle Tool Messages (Action Phase)
         elif isinstance(message_chunk, ToolMessage):
             tool_name = getattr(message_chunk, "name", "tool")
-            yield (f"\n[ACTION] Executing {tool_name}!!")
+            # Yield the "executing" label
+            yield (f"\n[ACTION] Executed {tool_name}:")
+            # Yield the actual tool result so it's always visible in the UI,
+            # even if the LLM later silently drops or misrepresents the data.
+            raw_content = _format_tool_content(message_chunk.content)
+            if raw_content:
+                yield (f"\n{raw_content}")
