@@ -6,6 +6,7 @@ import os
 import requests
 from zipfile import ZipFile
 from typing import List, Dict
+from utils.models import IssueScore
 from utils.parsers import parser1
 from utils.helpers import get_github_client, get_llm, get_repo_from_url, process_issues
 from utils.prompts import likelihood_score_prompt
@@ -69,7 +70,7 @@ def generate_github_query(user_goal: str, user_stack: str) -> str:
 
 
 @tool
-def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
+def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> List[IssueScore]:
     """
     Evaluates the compatibility between a user's skills and a specific GitHub issue.
 
@@ -82,13 +83,13 @@ def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> int:
         metadata: A list of dictionaries containing issue details (title, body, labels).
 
     Returns:
-        An integer from 0 to 100, where 100 indicates a perfect match.
+        An integer from 0 to 10, where 10 indicates a perfect match.
     """
     llm = get_llm()
     chain = likelihood_score_prompt | llm | parser1
     response = chain.invoke({"skill_set": skill_set, "metadata": metadata})
     if response.scores:
-        return int(sum(score.score for score in response.scores) / len(response.scores))
+        return list(response.scores)
     return 0
 
 

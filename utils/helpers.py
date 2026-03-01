@@ -1,7 +1,7 @@
 from typing import List
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
-import random
+from langchain_core.language_models.llms import LLM
 import os
 from dotenv import load_dotenv
 from github import Github
@@ -20,9 +20,9 @@ def store_embeddings():
     pass
 
 
-def get_llm() -> ChatGoogleGenerativeAI:
-    llm_choice = random.randint(0, 1)
-    if llm_choice == 0:
+def get_llm() -> LLM:
+    llm_choice = os.getenv("LLM_PROVIDER")
+    if llm_choice == "google":
         api_key = os.getenv("GOOGLE_API_KEY")
         return ChatGoogleGenerativeAI(model="gemini-2.5-flash", api_key=api_key)
     else:
