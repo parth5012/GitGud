@@ -12,7 +12,10 @@ def send_issues_to_discord():
         'user_goal': 'To start with Open Source and long term contributions.',
         'user_stack': 'Python,django,Celery,Langchain,Langgraph,Sklearn'
     })
-    formatted = json.dumps([s.__dict__ for s in output['scored_issues']], indent=2, default=str)
-    send_content_to_discord(formatted)
+    if output.get("error"):
+        send_content_to_discord(f"⚠️ Pipeline failed: {output['error']}")
+    else:
+        formatted = json.dumps([s.__dict__ for s in output['scored_issues']], indent=2, default=str)
+        send_content_to_discord(formatted)
 
     

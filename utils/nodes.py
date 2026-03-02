@@ -39,6 +39,9 @@ def get_likelihood_score(state: CoreState) -> List[IssueScore]:
     Returns:
         An integer from 0 to 10, where 10 indicates a perfect match.
     """
+    if state.get("error"):  # ← short-circuit if fetch_issues failed
+        print(f"Skipping scoring due to earlier error: {state['error']}")
+        return {"scored_issues": []}
     skill_set = state["user_stack"]
     metadata = state['metadata']
     llm = get_llm()
@@ -47,7 +50,7 @@ def get_likelihood_score(state: CoreState) -> List[IssueScore]:
     if response.scores:
         return {"scored_issues": list(response.scores)}
 
-    return state
+    return {"scored_issues": []}
 
 def fetch_issues(state: CoreState) -> Dict:
     """

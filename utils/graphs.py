@@ -1,4 +1,4 @@
-from langgraph.graph import StateGraph
+from langgraph.graph import StateGraph,END
 from langgraph.prebuilt import tools_condition
 from utils.nodes import chat_node, fetch_issues, generate_github_query, get_likelihood_score, tool_node
 from .states import CoreState, FilterAgentState

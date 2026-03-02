@@ -15,4 +15,5 @@ class CoreState(TypedDict):
     query: str
     user_goal: str
     user_stack: str
+    error: str  
 

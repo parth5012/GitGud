@@ -39,8 +39,7 @@ def fetch_issues(query: str) -> Dict:
 
 @tool
 def generate_github_query(user_goal: str, user_stack: str) -> str:
-    """
-    Transforms a user's high-level goal and technical stack into a structured GitHub search query string.
+    """Transforms a user's high-level goal and technical stack into a structured GitHub search query string.
     It is a mandatory step before calling the fetch_issues tool.
 
     Args:
@@ -90,7 +89,7 @@ def get_likelihood_score(skill_set: str, metadata: List[Dict]) -> List[IssueScor
     response = chain.invoke({"skill_set": skill_set, "metadata": metadata})
     if response.scores:
         return list(response.scores)
-    return 0
+    return []
 
 
 @tool
@@ -109,7 +108,7 @@ def fetch_codebase(url: str):
 
         # Extract
         with ZipFile(io.BytesIO(response.content)) as z:
-            z.extractall("./codebases")
+            z.extractall(f"{os.path.dirname(os.path.abspath(__file__))}/codebases")
 
         print("Codebase extracted successfully!")
         return "Success,CodeBase is now Accessible at ./codebases"
