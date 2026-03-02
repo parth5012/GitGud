@@ -11,7 +11,7 @@ app.autodiscover_tasks(['utils.tasks'])
 
 app.conf.beat_schedule = {
     'find_issues': {
-        'task': 'utils.tasks.send_issues_to_discord',
+        'task': 'Send Issues to Discord',
         'schedule': 3000,
     },
 }

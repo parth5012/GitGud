@@ -43,7 +43,7 @@ def get_likelihood_score(state: CoreState) -> List[IssueScore]:
         print(f"Skipping scoring due to earlier error: {state['error']}")
         return {"scored_issues": []}
     skill_set = state["user_stack"]
-    metadata = state['metadata']
+    metadata = state['issues']
     llm = get_llm()
     chain = likelihood_score_prompt | llm | parser1
     response = chain.invoke({"skill_set": skill_set, "metadata": metadata})
@@ -65,16 +65,19 @@ def fetch_issues(state: CoreState) -> Dict:
     Returns:
         A dictionary containing a list of processed issue objects and total count.
     """
+    client = None   
     try:
         query = state['query']
         client = get_github_client()
         issues = client.search_issues(query=query, sort="created", order="desc")
         print(f"Found {issues.totalCount} matching issues!")
         issues = process_issues(issues=issues)
-        client.close()
         return {"issues": issues}
     except Exception as e:
         return {"error": str(e), "issues": []}
+    finally:
+        if client:
+            client.close()
     
 
 def generate_github_query(state:CoreState) -> str:

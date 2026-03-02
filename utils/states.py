@@ -9,7 +9,6 @@ class FilterAgentState(TypedDict):
 class CoreState(TypedDict):
     issues: List[Dict]
     scored_issues: Annotated[List[Dict],operator.add]
-    metadata: List[Dict]
     messages: Annotated[list[BaseMessage], add_messages]
     final_response: str
     query: str

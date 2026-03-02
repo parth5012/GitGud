@@ -15,7 +15,7 @@ def send_issues_to_discord():
     if output.get("error"):
         send_content_to_discord(f"⚠️ Pipeline failed: {output['error']}")
     else:
-        formatted = json.dumps([s.__dict__ for s in output['scored_issues']], indent=2, default=str)
+        formatted = json.dumps([s.model_dump() for s in output['scored_issues']], indent=2, default=str)
         send_content_to_discord(formatted)
 
     
