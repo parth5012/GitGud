@@ -2,6 +2,7 @@ from typing import List
 from langchain_google_genai.chat_models import ChatGoogleGenerativeAI
 from langchain_groq import ChatGroq
 from langchain_core.language_models.llms import LLM
+from contextlib import contextmanager
 import os
 from dotenv import load_dotenv
 from github import Github
@@ -67,12 +68,13 @@ def get_repo_identifier(url: str) -> str:
     return f"{username}/{repo_name}"
 
 
-def get_repo_from_url(url: str) -> Repository:
-    # Get github client
-    with get_github_client() as g:
-        # fetch the unique repo identifier from url
-        repo_identifier = get_repo_identifier(url)
-        # get the repository
-        repo = g.get_repo(repo_identifier)
 
-    return repo
+@contextmanager
+def get_repo_from_url(url: str):
+    g = get_github_client()
+    try:
+        repo_identifier = get_repo_identifier(url)
+        yield g.get_repo(repo_identifier)   # repo is alive inside the `with` block
+    finally:
+        g.close()                           # always closes, even on exception
+

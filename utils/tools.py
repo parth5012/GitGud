@@ -31,10 +31,11 @@ def fetch_issues(query: str) -> Dict:
         issues = client.search_issues(query=query, sort="created", order="desc")
         print(f"Found {issues.totalCount} matching issues!")
         issues = process_issues(issues=issues)
-        client.close()
         return issues
     except Exception as e:
         return {"error": str(e), "issues": []}
+    finally:
+        client.close()
 
 
 @tool
@@ -100,20 +101,15 @@ def fetch_codebase(url: str):
     :type url: str
     """
     try:
-        repo = get_repo_from_url(url)
-        # Get the url for Zip file.
-        archive_url = repo.get_archive_link("zipball")
-        # Get the Zip in Memory Buffer
-        response = requests.get(archive_url)
-
-        # Extract
+        with get_repo_from_url(url) as repo:
+            archive_url = repo.get_archive_link("zipball")  # client is still open ✅
+        response = requests.get(archive_url)  # no client needed here, just HTTP
+        path = f'{os.path.dirname(os.path.abspath(__file__))}/codebases'
         with ZipFile(io.BytesIO(response.content)) as z:
-            z.extractall(f"{os.path.dirname(os.path.abspath(__file__))}/codebases")
-
-        print("Codebase extracted successfully!")
-        return "Success,CodeBase is now Accessible at ./codebases"
+            z.extractall(path)
+        return f"Success, CodeBase is now accessible at {path}"
     except Exception as e:
-        return f"Failure,Reason: {e}"
+        return f"Failure, Reason: {e}"
 
 
 @tool
