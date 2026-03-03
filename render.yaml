@@ -6,7 +6,7 @@ services:
     name: gitscout-worker
     runtime: docker
     dockerfilePath: ./Dockerfile
-    startCommand: celery -A beat worker --loglevel=info
+    dockerCommand: celery -A beat worker --loglevel=info
     envVars:
       - key: CELERY_BROKER_URL
         sync: false   # Will be set manually in Render dashboard
@@ -36,7 +36,7 @@ services:
     name: gitscout-beat
     runtime: docker
     dockerfilePath: ./Dockerfile
-    startCommand: celery -A beat beat --loglevel=info
+    dockerCommand: celery -A beat beat --loglevel=info
     envVars:
       - key: CELERY_BROKER_URL
         sync: false
