@@ -1,53 +1,31 @@
-from textual.app import App, ComposeResult
-from textual.widgets import Input, Markdown, Footer, Header, Static
-from textual.containers import VerticalScroll
 from utils.graphs import build_core_graph
-from utils.cli import async_output_stream
+from utils.cli import output_stream
 
 
-class GitScout(App):
-    CSS = """
-    #chat_history { height: 1fr; border: solid green; padding: 1; }
-    Input { dock: bottom; margin-top: 1; }
-    """
+def main():
+    graph = build_core_graph()
+    while True:
+        try:
+            user_input = input("You: ").strip()
 
-    def __init__(
-        self, driver_class=None, css_path=None, watch_css=False, ansi_color=False
-    ):
-        self.graph = build_core_graph()
-        super().__init__(driver_class, css_path, watch_css, ansi_color)
+            if user_input.lower() in ["exit", "quit"]:
+                print("Goodbye!")
+                break
 
-    def compose(self) -> ComposeResult:
-        yield Header()
-        with VerticalScroll(id="chat_history"):
-            yield Markdown("Welcome! How can I help you today?")
-        yield Input(placeholder="Type your message...")
-        yield Footer()
+            if not user_input:
+                continue
 
-    async def on_input_submitted(self, event: Input.Submitted) -> None:
-        # Get user message
-        user_message = event.value
-        container = self.query_one("#chat_history")
+            print("\nAssistant: ", end="", flush=True)
+            output_stream(graph, user_input)
+            print()
 
-        # Clear input
-        self.query_one(Input).value = ""
-
-        # Add user message to history
-        await container.mount(Markdown(f"**You:** {user_message}"))
-
-        # Add bot response
-        # 1. Create a placeholder for the streaming response
-        bot_response_area = Static("Thinking...", classes="msg")
-        await container.mount(bot_response_area)
-        container.scroll_end()
-
-        updated_text = "Agent:  "
-        # 2. Iterate over the stream and update the widget
-        async for chunk in async_output_stream(self.graph, user_message):
-            updated_text += chunk
-            bot_response_area.update(updated_text)
-            container.scroll_end()
+        except KeyboardInterrupt:
+            print("\n\nGoodbye!")
+            break
+        except Exception as e:
+            print(f"\nError: {str(e)}")
+            print()
 
 
 if __name__ == "__main__":
-    GitScout().run()
+    main()
