@@ -4,7 +4,7 @@ from langchain_groq import ChatGroq
 from langchain_core.language_models.llms import LLM
 from contextlib import contextmanager
 import os
-from dotenv import load_dotenv
+from dotenv import load_dotenv,find_dotenv,set_key
 from github import Github
 from github.Auth import Token
 
@@ -86,3 +86,15 @@ def get_repo_from_url(url: str):
         yield g.get_repo(repo_identifier)  # repo is alive inside the `with` block
     finally:
         g.close()  # always closes, even on exception
+
+
+def get_env_path():
+    env_path = find_dotenv()
+    if env_path:
+        return env_path
+    else:
+        return os.path.join(os.getcwd(),'.env')
+    
+def set_env_var(key,value):
+    env_path = get_env_path()
+    set_key(env_path,key,str(value))

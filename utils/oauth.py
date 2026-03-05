@@ -47,7 +47,7 @@ def poll_requests_for_access_token(data, client_id):
         if "access_token" in poll_data:
             access_token = poll_data["access_token"]
             print("Authorization successful! Access Token:", access_token)
-            break
+            return access_token
         elif poll_data["error"] == "authorization_pending":
             print("Waiting for user authorization...")
         elif poll_data["error"] == "slow_down":
@@ -63,3 +63,4 @@ def poll_requests_for_access_token(data, client_id):
         else:
             print("Unknown error:", poll_data["error"])
             break
+
